@@ -1,18 +1,27 @@
 const button = document.getElementById('play-btn');
 
 button.addEventListener('click', function() {
+    this.innerText = ('Gioca di nuovo!');
+
+    // * Recupero elementi da DOM e creazione classi
     const grid = document.getElementById('grid');
     const rows = 10;
     const cells = 10;
     const gridCells = rows * cells;
     let score = 0;
 
+
     // * Funzioni logica del gioco
+    /**
+     * Funzione che crea una nuova cella
+     * @param {number} content Il numero da stampare in cella
+     * @returns {node} un elemento div con classe cell
+     */
     function createNewCell(content) {
-        const newcell = document.createElement('div');
-        newcell.classList.add('cell');
-        newcell.innerText = content;
-        return newcell;
+        const newCell = document.createElement('div');
+        newCell.classList.add('cell');
+        newCell.innerText = content;
+        return newCell;
     }
 
     // * Esecuzione
@@ -21,7 +30,11 @@ button.addEventListener('click', function() {
         grid.appendChild(cell);
 
         cell.addEventListener('click', function () {
-            console.log('Hai cliccato la cella numero ' + [i])
+
+            // Blocco un possibile secondo click sulla cella
+            if (cell.classList.contains('clicked')) {
+                return;
+            }
             cell.classList.add('clicked');
             score++;
             console.log(score);
