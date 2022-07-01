@@ -34,17 +34,20 @@ button.addEventListener('click', function() {
      * @param {*} max valore massimo
      * @param {*} blacklist numeri scartati in quanto estratti più di una volta
      */
-    function getRandomNumber (min, max, blacklist) {
+    function createBombs (min, max, blacklist) {
         let randomNumber;
-        do {
-            randomNumber = Math.floor(Math.random() * (max + 1 - min)) + min;
-        } while (blacklist.includes(randomNumber));
+        for(let i = 0; i < 16; i++) {
+            do {
+                randomNumber = Math.floor(Math.random() * (max + 1 - min)) + min;
+            } while (!blacklist.includes(randomNumber));
+            blacklist.push(randomNumber);
+        }
+
     }
     
     // Estraggo un numero casuale
-    const randomNumber = getRandomNumber(1, gridCells, randomNumbers);
-    randomNumbers.push(randomNumber);
-    console.log(randomNumber);
+    const bombs = createBombs(1, gridCells, randomNumbers);
+    console.log(bombs);
     
     // * Esecuzione
     for(let i = 1; i <= gridCells; i++) {
