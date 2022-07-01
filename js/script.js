@@ -13,7 +13,6 @@ button.addEventListener('click', function() {
     const cells = 10;
     const gridCells = rows * cells;
     let score = 0;
-    const randomNumbers = [];
     
     // * Funzioni logica del gioco
     /**
@@ -34,19 +33,21 @@ button.addEventListener('click', function() {
      * @param {*} max valore massimo
      * @param {*} blacklist numeri scartati in quanto estratti più di una volta
      */
-    function createBombs (min, max, blacklist) {
+    function createBombs (min, max, n) {
         let randomNumber;
-        for(let i = 0; i < 16; i++) {
-            do {
-                randomNumber = Math.floor(Math.random() * (max + 1 - min)) + min;
-            } while (!blacklist.includes(randomNumber));
-            blacklist.push(randomNumber);
+        const blacklist = [];
+        while (blacklist.length < n) {
+            randomNumber = Math.floor(Math.random() * (max + 1 - min)) + min;
+            if (!blacklist.includes(randomNumber)) {
+                blacklist.push(randomNumber);
+            }
         }
 
+        return blacklist;
     }
     
     // Estraggo un numero casuale
-    const bombs = createBombs(1, gridCells, randomNumbers);
+    const bombs = createBombs(1, gridCells, 16);
     console.log(bombs);
     
     // * Esecuzione
@@ -63,6 +64,8 @@ button.addEventListener('click', function() {
                 return;
             }
             cell.classList.add('clicked');
+
+            
             score++;
             console.log(score);
         })
