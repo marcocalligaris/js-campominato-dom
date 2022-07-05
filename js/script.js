@@ -1,6 +1,4 @@
-// # MILESTONE 2
-// Facciamo in modo di generare 16 numeri casuali (tutti diversi) compresi tra 1 e il massimo di caselle disponibili.
-// Generiamoli e stampiamo in console per essere certi che siano corretti
+// Quando l'utente clicca su una cella, verifichiamo se ha calpestato una bomba, controllando se il numero di cella è presente nell'array di bombe. Se si, la cella diventa rossa (raccogliamo il punteggio e e scriviamo in console che la partita termina) altrimenti diventa azzurra e dobbiamo incrementare il punteggio.
 
 const button = document.getElementById('play-btn');
 
@@ -9,9 +7,12 @@ button.addEventListener('click', function() {
 
     // * Recupero elementi da DOM e creazione variabili
     const grid = document.getElementById('grid');
+    grid.innerHTML = '';
     const rows = 10;
     const cells = 10;
     const gridCells = rows * cells;
+    const totalBombs = 16;
+    const winningPoints = gridCells - totalBombs;
     let score = 0;
     
     // * Funzioni logica del gioco
@@ -28,10 +29,11 @@ button.addEventListener('click', function() {
     }
 
     /**
-     * Funzione che genera numeri casuali non ripetuti
-     * @param {*} min valore minimo
-     * @param {*} max valore massimo
-     * @param {*} blacklist numeri scartati in quanto estratti più di una volta
+     * Funzione che genera 'n' numeri casuali, non ripetuti
+     * @param {number} min valore minimo
+     * @param {number} max valore massimo
+     * @param {number} n quantità di numeri desiderata
+     * @returns una serie di numeri casuali, non ripetuti
      */
     function createBombs (min, max, n) {
         let randomNumber;
@@ -42,33 +44,46 @@ button.addEventListener('click', function() {
                 blacklist.push(randomNumber);
             }
         }
-
         return blacklist;
     }
-    
-    // Estraggo un numero casuale
-    const bombs = createBombs(1, gridCells, 16);
-    console.log(bombs);
+
+    /**
+     * Funzione che verifica se si arriva al Game Over
+     * @param {Node} cell La cella cliccata
+     * @param {number} bombs Array che contiene le bombe
+     * @returns {boolean} true se è Game Over, altrimenti false
+     */
+    function checkGameOver (cell, bombs) {
+        const cellNumber = parseInt(cell.innerText);
+        if (bombs.includes(cellNumber)) {
+            cell.classList.add('bomb');
+            console.log('Hai beccato una bomba, hai perso!');
+            return true;
+        } else {
+            cell.classList.add('safe');
+            return false;
+        }
+    }
     
     // * Esecuzione
+
+    const bombs = createBombs(1, gridCells, totalBombs);
+    console.log(bombs);
+
     for(let i = 1; i <= gridCells; i++) {
-
-
         const cell = createNewCell(i);
-        grid.appendChild(cell);
-
+        
         cell.addEventListener('click', function () {
             
-            // Blocco un possibile secondo click sulla cella
-            if (cell.classList.contains('clicked')) {
-                return;
-            }
-            cell.classList.add('clicked');
+            if (this.classList.contains('clicked')) return;
+            this.classList.add('clicked');
+            console.log(this.innerText);
 
-            
-            score++;
+            const isGameOver = checkGameOver(this, bombs);
+            if (!isGameOver) score++;
             console.log(score);
-        })
+        });
+        grid.appendChild(cell);
     } 
 })
 

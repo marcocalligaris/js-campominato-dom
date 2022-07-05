@@ -65,6 +65,14 @@ footer {
 }
 
 #grid .cell.clicked {
-    background-color: lightskyblue;
+    color: #fff;
     cursor: not-allowed;
+}
+
+.cell.safe {
+    background-color: dodgerblue;
+}
+
+.cell.bomb {
+    background-color: red;
 }
