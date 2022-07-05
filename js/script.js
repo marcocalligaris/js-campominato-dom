@@ -47,20 +47,48 @@ button.addEventListener('click', function() {
         return blacklist;
     }
 
+    function gameOver (score, hasWon, bombs) {
+        const cells = document.querySelectorAll('.cell');
+
+        for (let i = 0; i < cells.length; i++) {
+            const cellNumber = parseInt(cells[i].innerText);
+
+            if (bombs.includes(cellNumber)) {
+                cells[i].classList.add('bomb');
+            } else {
+                cells[i].classList.add('safe');
+            }
+
+            cells[i].classList.add('clicked');
+        }
+
+        let message = hasWon ? 'Complimenti, hai vinto! ' : 'Hai preso una bomba, hai perso. ';
+        message += `Hai totalizzato ${score} punti.`;
+
+        alert(message);
+    }
+
     /**
      * Funzione che verifica se si arriva al Game Over
      * @param {Node} cell La cella cliccata
-     * @param {number} bombs Array che contiene le bombe
+     * @param {number[]} bombs Array che contiene le bombe
+     * @param {number} score Punteggio del momento
+     * @param {number} winningPoints Punteggio massimo raggiungibile
      * @returns {boolean} true se è Game Over, altrimenti false
      */
-    function checkGameOver (cell, bombs) {
+    function checkGameOver (cell, bombs, score, winningPoints) {
         const cellNumber = parseInt(cell.innerText);
+
         if (bombs.includes(cellNumber)) {
             cell.classList.add('bomb');
-            console.log('Hai beccato una bomba, hai perso!');
+            gameOver(score, false, bombs);
             return true;
         } else {
             cell.classList.add('safe');
+            if (score + 1 === winningPoints) {
+                gameOver(winningPoints, true, bombs);
+                return true;
+            }
             return false;
         }
     }
@@ -79,7 +107,7 @@ button.addEventListener('click', function() {
             this.classList.add('clicked');
             console.log(this.innerText);
 
-            const isGameOver = checkGameOver(this, bombs);
+            const isGameOver = checkGameOver(this, bombs, score, winningPoints);
             if (!isGameOver) score++;
             console.log(score);
         });
